@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+
+		<script>
+		function gettime()
+		{
+			var xmlhttp;
+			if (window.XMLHttpRequest)
+			{
+				//  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+				xmlhttp=new XMLHttpRequest();
+			}
+			else
+			{
+				// IE6, IE5 浏览器执行代码
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function()
+			{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					var NowDate = new Date();
+					var EndDate = new Date(xmlhttp.responseText);
+					var tDate = EndDate.getTime() - NowDate.getTime();
+					var HowDate = Math.floor(tDate / 1000 / 60 / 60 / 24);
+					document.getElementById("time").innerHTML=HowDate + 1;
+				}
+			}
+			xmlhttp.open("GET","./txt/time.txt",true);
+			xmlhttp.send();
+		}
+		gettime();
+		
+		function getlogs()
+		{
+			var xmlhttp;
+			if (window.XMLHttpRequest)
+			{
+				//  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+				xmlhttp=new XMLHttpRequest();
+			}
+			else
+			{
+				// IE6, IE5 浏览器执行代码
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function()
+			{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					var logs = xmlhttp.responseText.split("\n");
+					document.getElementById("logs").innerHTML=logs[Math.floor(Math.random() * logs.length)];
+				}
+			}
+			xmlhttp.open("GET","./txt/logs.txt",true);
+			xmlhttp.send();
+		}
+		
+		getlogs()
+		let timer = setInterval(function(){
+			getlogs()
+		}, 1800000)
+		
+		</script>
+	</head>
+	<body style="background-color: antiquewhite;">
+		<div style="width: 100%; height: 1000px; display: flex; align-items: center; justify-content: center; flex-direction: column; background">
+			<div style="font-size: 5em;">
+				距离
+				<span style="color:#ed5b5b;">
+					<span style="font-size: 3em;">高</span>
+					考
+				</span>
+				还有
+				<span id="time" style="color: deepskyblue;"></span>
+				天
+			</div>
+			<br />
+			<center><div id="logs" style="font-size: 2em;"></div></center>
+		</div>
+	</body>
+</html>

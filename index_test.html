@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>The ESAP Project - For you</title>
+		<!-- © 2022-2024 The ESAP Project 1547_ApMUtS All Rights Reserved. -->
+		<style>
+			@font-face {
+				font-family: "wenyue";
+				src: url("./resources/wenyue.ttf");
+			}
+
+			.tasks {
+				font-family: 'wenyue';
+				font-size: 3em;
+				text-align: right;
+				margin-right: 10px;
+				margin-left: 30px;
+			}
+
+			.other {
+				text-align: right;
+				margin-right: 10px;
+				margin-left: 30px;
+				font-size: 2em;
+				font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+			}
+
+			.father_task {
+				width: auto;
+				height: auto;
+				box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+				border-radius: 14px;
+				z-index: 3;
+				background: rgba(0, 0, 0, 0);
+				align-self: flex-end;
+				backdrop-filter: blur(6px);
+				margin-bottom: 15px;
+			}
+		</style>
+
+		<script>
+			var HttpClient = function() {
+				this.get = function(aUrl, aCallback) {
+					var anHttpRequest = new XMLHttpRequest();
+					anHttpRequest.onreadystatechange = function() {
+						if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+							aCallback(anHttpRequest.responseText);
+					}
+
+					anHttpRequest.open("GET", aUrl, true);
+					anHttpRequest.send(null);
+				}
+			}
+
+			window.onload = function() {
+
+				function get_class() {
+					var client = new HttpClient();
+					client.get("./music/logs_class.txt", function(response) {
+						var classes_txt = response.split("\n");
+						var classes = (classes_txt[new Date().getDay() - 1]).split(" ");
+						for (class_number in classes) {
+							document.getElementById("class_" + class_number.toString()).innerHTML = classes[class_number];
+						}
+					});
+				}
+
+				get_class()
+				
+				document.getElementById("class_0").onclick = function() {
+					var time = new Date().getHours() * 100 + new Date().getMinutes();
+					
+					if ( time >= 745 ) { //1
+						document.getElementById("class_2").style.color = "green";
+					}
+					if ( time >= 835 ) { //2
+						document.getElementById("class_3").style.color = "green";
+					}
+					if ( time >= 945 ) { //3
+						document.getElementById("class_4").style.color = "green";
+					}
+					if ( time >= 1035 ) { //4
+						document.getElementById("class_5").style.color = "green";
+					}
+					if ( time >= 1125 ) { //5
+						document.getElementById("class_6").style.color = "green";
+					}
+					if ( time >= 1420 ) { //6
+						document.getElementById("class_7").style.color = "green";
+					}
+					if ( time >= 1510 ) { //7
+						document.getElementById("class_8").style.color = "green";
+					}
+					if ( time >= 1605 ) { //8
+						document.getElementById("class_9").style.color = "green";
+					}
+					if ( time >= 1655 ) { //9
+						document.getElementById("class_10").style.color = "green";
+					}
+				}
+				
+			}
+		</script>
+	</head>
+	<body>
+		<div style="display: flex; flex-direction: column;">
+			<div class="father_task">
+				<div class="other" style="color: red;">
+					<span id="class_0" style="color: darkcyan;">获取课表失败QAQ</span>
+					<span id="class_1" style="color: #ff8229"></span>
+					<span id="class_2"></span>
+					<span id="class_3"></span>
+					<span id="class_4"></span>
+					<span id="class_5"></span>
+					<span id="class_6"></span>
+					<span id="class_7"></span>
+					<span id="class_8"></span>
+					<span id="class_9"></span>
+					<span id="class_10"></span>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

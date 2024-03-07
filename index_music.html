@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>The ESAP Project - For you</title>
+		<!-- © 2022-2024 The ESAP Project 1547_ApMUtS All Rights Reserved. -->
+		<style>
+			@font-face {
+				font-family: "wenyue";
+				src: url("./resources/wenyue.ttf");
+			}
+
+			.tasks {
+				font-family: 'wenyue';
+				font-size: 3em;
+				text-align: right;
+				margin-right: 10px;
+				margin-left: 30px;
+			}
+			
+			@keyframes slidein {
+			  from {
+			    margin-left: 50%;
+			    width: 100%;
+			  }
+			
+			  to {
+			    margin-left: 0%;
+			    width: 100%;
+			  }
+			}
+
+			.other {
+				text-align: right;
+				margin-right: 10px;
+				margin-left: 30px;
+				font-size: 2em;
+				font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+			}
+
+			.father_task {
+				width: auto;
+				height: auto;
+				box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+				border-radius: 14px;
+				z-index: 3;
+				background: rgba(0, 0, 0, 0);
+				align-self: flex-end;
+				backdrop-filter: blur(6px);
+				margin-bottom: 15px;
+			}
+		</style>
+
+
+		<script>
+			
+			var class_Fri = 0;
+			var class_Sat = "A1";
+			var classes_txt = "";
+			
+			function change_one_class(id) {
+				var text = document.getElementById(id).innerText;
+				switch(text) {
+					case "语":
+						document.getElementById(id).innerHTML = "数";
+						break;
+					case "数":
+						document.getElementById(id).innerHTML = "英";
+						break;
+					case "英":
+						document.getElementById(id).innerHTML = "物";
+						break;
+					case "物":
+						document.getElementById(id).innerHTML = "化";
+						break;
+					case "化":
+						document.getElementById(id).innerHTML = "生";
+						break;
+					case "生":
+						document.getElementById(id).innerHTML = "测";
+						break;
+					case "测":
+						document.getElementById(id).innerHTML = "试";
+						break;
+					case "试":
+						document.getElementById(id).innerHTML = "测试";
+						break;
+					case "测试":
+						document.getElementById(id).innerHTML = "语自";
+						break;
+					case "语自":
+						document.getElementById(id).innerHTML = "数自";
+						break;
+					case "数自":
+						document.getElementById(id).innerHTML = "英自";
+						break;
+					case "英自":
+						document.getElementById(id).innerHTML = "物自";
+						break;
+					case "物自":
+						document.getElementById(id).innerHTML = "班会";
+						break;
+					case "班会":
+						document.getElementById(id).innerHTML = "再";
+						break;
+					case "再":
+						document.getElementById(id).innerHTML = "选";
+						break;
+					case "选":
+						document.getElementById(id).innerHTML = "语";
+						break;
+				}
+			}
+			
+			window.onload = function() {
+
+				function formaData(timer) {
+					const year = timer.getFullYear()
+					const month = timer.getMonth() + 1 // 由于月份从0开始，因此需加1
+					const day = timer.getDate()
+					const hour = timer.getHours()
+					const minute = timer.getMinutes()
+					const second = timer.getSeconds()
+					return `${pad(year, 4)}年${pad(month)}月${pad(day)}日  ${pad(hour)}:${pad(minute)}:${pad(second)}`
+				}
+
+				function pad(timeEl, total = 2, str = '0') {
+					return timeEl.toString().padStart(total, str)
+				}
+
+				var HttpClient = function() {
+					this.get = function(aUrl, aCallback) {
+						var anHttpRequest = new XMLHttpRequest();
+						anHttpRequest.onreadystatechange = function() {
+							if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+								aCallback(anHttpRequest.responseText);
+						}
+
+						anHttpRequest.open("GET", aUrl, true);
+						anHttpRequest.send(null);
+					}
+				}
+
+
+				//userDefinded
+				function get_tasks() {
+					var client = new HttpClient();
+					client.get("./music/logs_tasks.txt", function(response) {
+						var NowDate = new Date();
+						if (NowDate.getMonth() >= 5 && NowDate.getDate() >= 7) {
+							var EndDate = new Date((NowDate.getFullYear() + 1), 7, 6, 0, 0, 0, 0);
+						} else {
+							var EndDate = new Date(NowDate.getFullYear(), 5, 7, 0, 0, 0, 0);
+						}
+						var tDate = EndDate.getTime() - NowDate.getTime();
+						var HowDate = Math.floor(tDate / 1000 / 60 / 60 / 24) + 1;
+						document.getElementById("time3").innerHTML = HowDate.toString();
+						
+						var tasks_txt = response.split("\n");
+						var i = 0;
+						for (task_number in tasks_txt) {
+							if (++i > 2) {
+								break;
+							}
+							var task = tasks_txt[task_number].split(" ");
+							document.getElementById("project" + (Number(task_number) + 1).toString()).innerHTML =
+								task[0];
+							var task_date = Math.floor((new Date(task[1]) - new Date()) / 1000 / 60 / 60 / 24) + 1;
+							document.getElementById("time" + (Number(task_number) + 1).toString()).innerHTML =
+								task_date;
+						}
+					});
+				}
+
+				function get_weather() {
+					var client = new HttpClient();
+					client.get(
+						"https://devapi.qweather.com/v7/weather/now?location=101280102&key=16ae125af684475cba0014baf6e5fd55",
+						function(response) {
+							var weather_info = JSON.parse(response);
+							document.getElementById("weather").innerHTML = "实时天气：" + weather_info.now.text + "，温度" +
+								weather_info.now.temp + "℃，湿度：" + weather_info.now.humidity + "°";
+						});
+
+					var client = new HttpClient();
+					client.get(
+						"https://devapi.qweather.com/v7/minutely/5m?location=113.41,22.92&key=16ae125af684475cba0014baf6e5fd55",
+						function(response) {
+							var weather_info = JSON.parse(response);
+							document.getElementById("weather_rain").innerHTML = weather_info.summary;
+						});
+				}
+
+				function get_class() {
+					var client = new HttpClient();
+					client.get("./music/logs_class.txt", function(response) {
+						window['classes_txt'] = response.split("\n");
+						var classes = window['classes_txt'][new Date().getDay()].split(" ");
+						for (class_number in classes) {
+							document.getElementById("class_" + class_number.toString()).innerHTML = classes[
+								class_number];
+						}
+					});
+				}
+
+				// function get_hitoko() {
+				// 	var client = new HttpClient();
+				// 	client.get("https://v1.hitokoto.cn/?c=f&encode=text", function(response) {
+				// 		document.getElementById("hitoko").innerHTML = response;
+				// 	});
+				// }
+
+				function change_cls_color() {
+					var time = new Date().getHours() * 100 + new Date().getMinutes();
+
+					if (time >= 745) { //1
+						document.getElementById("class_2").style.color = "green";
+					}
+					if (time >= 835) { //2
+						document.getElementById("class_3").style.color = "green";
+					}
+					if (time >= 945) { //3
+						document.getElementById("class_4").style.color = "green";
+					}
+					if (time >= 1035) { //4
+						document.getElementById("class_5").style.color = "green";
+					}
+					if (time >= 1125) { //5
+						document.getElementById("class_6").style.color = "green";
+					}
+					if (time >= 1420) { //6
+						document.getElementById("class_7").style.color = "green";
+					}
+					if (time >= 1510) { //7
+						document.getElementById("class_8").style.color = "green";
+					}
+					if (time >= 1605) { //8
+						document.getElementById("class_9").style.color = "green";
+					}
+					if (time >= 1655) { //9
+						document.getElementById("class_10").style.color = "green";
+					}
+				}
+				
+				function clear_class() {
+					for (i = 1; i <= 10; i++) {document.getElementById("class_" + i).innerHTML = "";}
+				}
+				
+				function change_fucking_class(day, class_num) {
+					class_Fri = day;
+					class_Sat = day;
+					clear_class();
+					var classes = (window['classes_txt'][class_num]).split(" ");
+					for (class_number in classes) {
+						document.getElementById("class_" + class_number.toString()).innerHTML = classes[class_number];
+					}
+				}
+				
+				function crazy_Friday_class() {
+					if (new Date().getDay() == 5 && class_Fri == 0) {
+						change_fucking_class(1,7)
+					} else if (new Date().getDay() == 5 && class_Fri == 1) {
+						change_fucking_class(0,4)
+					} else if (new Date().getDay() == 6 && class_Sat == "A1") { //6 A2
+						change_fucking_class("A2",8)
+					} else if (new Date().getDay() == 6 && class_Sat == "A2") {
+						change_fucking_class("B1",9)
+					} else if (new Date().getDay() == 6 && class_Sat == "B1") {
+						change_fucking_class("B2",10)
+					} else if (new Date().getDay() == 6 && class_Sat == "B2") {
+						change_fucking_class("C1",11)
+					} else if (new Date().getDay() == 6 && class_Sat == "C1") {
+						change_fucking_class("C2",12)
+					} else if (new Date().getDay() == 6 && class_Sat == "C2") {
+						change_fucking_class("A1",5)
+					}
+				}
+				
+				get_tasks();
+				get_class()
+				change_cls_color()
+				// get_hitoko()
+				get_weather()
+				
+				document.getElementById("class_0").onclick = function() {
+					crazy_Friday_class()
+				};
+				
+				// document.getElementById("hitoko").onclick = function() {
+				// 	get_hitoko()
+				// }
+				
+				let timer = setInterval(function() {
+					document.getElementById("time_now").innerHTML = formaData(new Date());
+				}, 1000)
+				
+				let timer_cls_col = setInterval(function() {
+					change_cls_color()
+				}, 30000);
+				
+				let timer_hitoko = setInterval(function() {
+					// get_hitoko()
+					get_weather()
+				}, 900000);
+				
+			}
+		</script>
+	</head>
+	<!-- https://api.likepoems.com/img/nature https://api.dujin.org/pic/fengjing https://api.asxe.vip/scenery.php https://imgapi.xl0408.top/index.php https://t.mwm.moe/fj/ https://source.unsplash.com/1920x1080/?nature -->
+	<body style="background: url('./img/back.jpg') no-repeat;background-size:100%;">
+		<div style="display: flex; flex-direction: column;animation-duration: 3s;animation-name: slidein;">
+			<div class="father_task">
+				<div class="tasks">
+					<span id="time_now"
+						style="color:#ff5500; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">这里是时间，但又不是时间</span>
+				</div>
+			</div>
+			<div class="father_task" style="color:#fc5531;">
+				<div class="other">
+					<span id="weather">获取天气失败QAQ</span>
+				</div>
+				<div class="other">
+					<span id="weather_rain">获取降雨信息失败QAQ</span>
+				</div>
+			</div>
+			<div class="father_task">
+				<div class="other" style="color: red; font-size: 3em;">
+					<span id="class_0" style="color: darkcyan;">获取课表失败QAQ</span>
+					<span id="class_1" style="color: #ff8229"></span>
+					<span id="class_2" onclick="change_one_class(this.id)"></span>
+					<span id="class_3" onclick="change_one_class(this.id)"></span>
+					<span id="class_4" onclick="change_one_class(this.id)"></span>
+					<span id="class_5" onclick="change_one_class(this.id)"></span>
+					<span id="class_6" onclick="change_one_class(this.id)"></span>
+					<span style="color: black;">|</span>
+					<span id="class_7" onclick="change_one_class(this.id)"></span>
+					<span id="class_8" onclick="change_one_class(this.id)"></span>
+					<span id="class_9" onclick="change_one_class(this.id)"></span>
+					<span id="class_10" onclick="change_one_class(this.id)"></span>
+				</div>
+			</div>
+			<div class="father_task">
+				<div class="tasks">
+					距离
+					<span style="color:#ed5b5b;text-align:center" id="project1">
+						task1
+					</span>
+					还有
+					<span id="time1" style="color:#ed5b5b; text-align: right;"></span>
+					天
+				</div>
+				<div class="tasks">
+					距离
+					<span style="color: deepskyblue;" id="project2">
+						task2
+					</span>
+					还有
+					<span id="time2" style="color: deepskyblue;"></span>
+					天
+				</div>
+				<div class="tasks" style="font-size: 5em;">
+					距离
+					<span style="color:#ed5b5b;">
+						高考
+					</span>
+					还有
+					<span id="time3" style="color:#ed5b5b;"></span>
+					天
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
